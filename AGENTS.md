@@ -54,6 +54,17 @@ bug). Install with `npx -y npm@11.19.1 install` instead.
   break; today/this week never breaks until it is over.
 - Milestones: daily 7/30/100/365, weekly 4/12/26/52.
 
+## Data imports (`scripts/`)
+
+Run against production with `set -a; . ./.env.production; set +a; node scripts/<script>`.
+All are idempotent and move a routine's start date back to its first record.
+
+- `import-posts.mjs --start 2023-01-02` — himetsai.com shitposts → weekly "Shitpost"; a
+  post's day uses the day cutoff; gapped-then-made-up weeks get a `skip` on their Sunday.
+- `import-chess.mjs --user boogerman919` — chess.com games → daily "chess" (Pacific time).
+- `import-days.mjs --routine Gym --dates …` — arbitrary day lists (used for the 126
+  workouts read off fitness-app screenshots); `--pause from:to` marks spans with no data.
+
 ## Conventions
 
 - Match the site's style: 2-space, double quotes, semicolons, compact code.
