@@ -13,6 +13,7 @@ export class Index {
   private readonly byId = new Map<string, Routine>();
   private readonly schedules = new Map<string, Schedule[]>();
   private readonly marks = new Map<string, Mark>();
+  private readonly eventCount = new Map<string, number>();
   private readonly pauses: Pause[];
 
   constructor(snap: Snapshot) {
@@ -31,6 +32,7 @@ export class Index {
     // Latest event per (routine, day) wins. Events arrive in any order.
     const ordered = [...snap.events].sort((a, b) => a.loggedAt.localeCompare(b.loggedAt));
     for (const e of ordered) {
+      this.eventCount.set(e.routineId, (this.eventCount.get(e.routineId) ?? 0) + 1);
       const key = `${e.routineId}|${e.forDate}`;
       if (e.kind === "done") this.marks.set(key, "done");
       else if (e.kind === "skip") this.marks.set(key, "skipped");
@@ -51,13 +53,29 @@ export class Index {
     return date >= routine.createdOn && (routine.archivedOn === null || date < routine.archivedOn);
   }
 
-  isPaused(routineId: string, date: ISODate): boolean {
-    return this.pauses.some(
-      (p) =>
-        (p.routineId === null || p.routineId === routineId) &&
-        p.startDate <= date &&
-        (p.endDate === null || date <= p.endDate),
+  /** The pause covering this routine on `date` (a global one counts), if any. */
+  pauseFor(routineId: string, date: ISODate): Pause | null {
+    return (
+      this.pauses.find(
+        (p) =>
+          (p.routineId === null || p.routineId === routineId) &&
+          p.startDate <= date &&
+          (p.endDate === null || date <= p.endDate),
+      ) ?? null
     );
+  }
+
+  isPaused(routineId: string, date: ISODate): boolean {
+    return this.pauseFor(routineId, date) !== null;
+  }
+
+  /** The global pause in effect on `date`, if any. */
+  globalPause(date: ISODate): Pause | null {
+    return this.pauses.find((p) => p.routineId === null && p.startDate <= date && (p.endDate === null || date <= p.endDate)) ?? null;
+  }
+
+  hasEvents(routineId: string): boolean {
+    return this.eventCount.get(routineId) !== undefined;
   }
 
   /** Exists and not paused: a day that can be due. */

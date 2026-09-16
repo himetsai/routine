@@ -8,6 +8,8 @@
  *   from script here; on iOS these calls are no-ops.
  * - A Capacitor shell could later map these kinds to UIImpactFeedbackGenerator.
  */
+import { getPrefs } from "./data/prefs";
+
 export type HapticKind = "check" | "uncheck" | "success" | "milestone" | "error";
 
 const PATTERNS: Record<HapticKind, number | number[]> = {
@@ -21,7 +23,7 @@ const PATTERNS: Record<HapticKind, number | number[]> = {
 export const supportsVibrate = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
 
 export function haptic(kind: HapticKind) {
-  if (!supportsVibrate) return;
+  if (!supportsVibrate || !getPrefs().vibrate) return;
   try {
     navigator.vibrate(PATTERNS[kind]);
   } catch {

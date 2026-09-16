@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { dayReport, type Index, type ISODate, type Routine } from "../../engine";
+import { dayReport, dayStatus, type Index, type ISODate, type Routine } from "../../engine";
 import { enqueue } from "../data/outbox";
 import { haptic } from "../haptics";
 import { RoutineRow } from "./RoutineRow";
@@ -8,6 +8,8 @@ interface Props {
   idx: Index;
   today: ISODate;
   owner: boolean;
+  onOpen: (routine: Routine) => void;
+  onCreate: () => void;
 }
 
 function formatDay(date: ISODate): string {
@@ -15,12 +17,13 @@ function formatDay(date: ISODate): string {
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
 }
 
-export function Today({ idx, today, owner }: Props) {
+export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
   const report = dayReport(idx, today, today);
   const [showPaused, setShowPaused] = useState(false);
   const active = report.daily.filter((d) => d.status !== "paused");
-  const paused = [...report.daily.filter((d) => d.status === "paused"), ...report.weekly.filter((w) => w.eval.state === "excluded").map((w) => ({ routine: w.routine, status: "paused" as const }))];
-  const weekly = report.weekly.filter((w) => w.eval.state !== "excluded");
+  const weeklyItems = report.weekly.map((w) => ({ ...w, status: dayStatus(idx, w.routine, today, today) }));
+  const paused = [...report.daily.filter((d) => d.status === "paused"), ...weeklyItems.filter((w) => w.status === "paused")];
+  const weekly = weeklyItems.filter((w) => w.status !== "paused");
 
   function toggle(routine: Routine, next: boolean) {
     enqueue({
@@ -35,6 +38,7 @@ export function Today({ idx, today, owner }: Props) {
   }
 
   const empty = active.length === 0 && weekly.length === 0 && paused.length === 0;
+  const open = owner ? onOpen : undefined;
 
   return (
     <section className="card p-5 sm:p-6">
@@ -51,22 +55,21 @@ export function Today({ idx, today, owner }: Props) {
       </header>
 
       {empty ? (
-        <p className="mt-4 text-secondary">
-          No routines yet.{owner ? " Add one below to start a streak." : ""}
-        </p>
+        <p className="mt-4 text-secondary">No routines yet.{owner ? " Add one to start a streak." : ""}</p>
       ) : (
         <ul className="mt-3 divide-y divide-primary/5">
           {active.map(({ routine, status }) => (
-            <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} />
+            <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} onOpen={open} />
           ))}
-          {weekly.map(({ routine, eval: ev }) => (
+          {weekly.map(({ routine, eval: ev, status }) => (
             <RoutineRow
               key={routine.id}
               routine={routine}
-              status={idx.mark(routine.id, today) ?? "none"}
+              status={status}
               week={ev}
               owner={owner}
               onToggle={toggle}
+              onOpen={open}
             />
           ))}
         </ul>
@@ -84,11 +87,17 @@ export function Today({ idx, today, owner }: Props) {
           {showPaused ? (
             <ul className="mt-1 divide-y divide-primary/5">
               {paused.map(({ routine, status }) => (
-                <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} />
+                <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} onOpen={open} />
               ))}
             </ul>
           ) : null}
         </div>
+      ) : null}
+
+      {owner ? (
+        <button type="button" onClick={onCreate} className="mt-4 w-full rounded-xl border border-dashed border-primary/20 py-2 text-sm font-bold text-secondary/70 hover:border-highlight hover:text-highlight">
+          + new routine
+        </button>
       ) : null}
     </section>
   );

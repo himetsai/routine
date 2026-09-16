@@ -8,6 +8,7 @@ export default defineConfig({
   output: "static",
   adapter: vercel(),
   integrations: [react()],
+  devToolbar: { enabled: false },
   env: {
     schema: {
       DATABASE_URL: envField.string({ context: "server", access: "secret", default: "file:local.db" }),

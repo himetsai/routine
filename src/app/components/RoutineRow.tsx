@@ -8,9 +8,10 @@ interface Props {
   week?: WeekEval;
   owner: boolean;
   onToggle: (routine: Routine, next: boolean) => void;
+  onOpen?: (routine: Routine) => void;
 }
 
-export function RoutineRow({ routine, status, week, owner, onToggle }: Props) {
+export function RoutineRow({ routine, status, week, owner, onToggle, onOpen }: Props) {
   const done = status === "done";
   const muted = done || status === "skipped" || status === "paused";
   return (
@@ -24,12 +25,20 @@ export function RoutineRow({ routine, status, week, owner, onToggle }: Props) {
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <span className="text-lg leading-none">{routine.emoji}</span>
-          <span
-            className={`truncate font-bold transition-colors duration-300 ${muted ? "text-secondary/50 line-through decoration-secondary/40" : "text-primary"}`}
+          <button
+            type="button"
+            onClick={() => onOpen?.(routine)}
+            disabled={!onOpen}
+            className="flex min-w-0 items-baseline gap-2 text-left"
+            aria-label={`Open ${routine.name}`}
           >
-            {routine.name}
-          </span>
+            <span className="text-lg leading-none">{routine.emoji}</span>
+            <span
+              className={`truncate font-bold transition-colors duration-300 ${muted ? "text-secondary/50 line-through decoration-secondary/40" : "text-primary"}`}
+            >
+              {routine.name}
+            </span>
+          </button>
           <span className="ml-auto shrink-0 text-[10px] uppercase tracking-widest text-secondary/50" title={`${IMPORTANCE_LABEL[routine.importance]} importance`}>
             {"●".repeat(routine.importance)}
           </span>

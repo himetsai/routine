@@ -51,4 +51,20 @@
   .card {
     @apply rounded-2xl bg-white/70 shadow-sm backdrop-blur-sm;
   }
+
+  .label {
+    @apply block text-[10px] font-bold uppercase tracking-widest text-secondary/60;
+  }
+
+  .field {
+    @apply mt-1 rounded-xl border border-primary/15 bg-white/80 px-3 py-2 text-base text-primary outline-none focus:border-highlight;
+  }
+
+  .btn-primary {
+    @apply rounded-xl bg-highlight px-4 py-2.5 font-bold text-white transition-colors hover:bg-highlight/90 disabled:opacity-40;
+  }
+
+  .btn-secondary {
+    @apply rounded-xl bg-primary/5 px-4 py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary/10 disabled:opacity-40;
+  }
 }
