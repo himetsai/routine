@@ -28,7 +28,8 @@ bug). Install with `npx -y npm@11.19.1 install` instead.
 - **Tailwind 4**, tokens in `src/styles/global.css` `@theme` — copied from the site's
   `tailwind.config.mjs` (`background/primary/secondary/highlight`, `font-sans/display`,
   shadow scale). Light-only by decision. The site's animated Y2K backdrop is reduced to
-  its static gradient; hearts return as confetti on milestones.
+  its static gradient. No site header/wordmark and no confetti — milestones are a toast
+  plus a haptic.
 - **Data**: Drizzle + `@libsql/client`. Local dev `DATABASE_URL=file:local.db`;
   production Turso (`himetsai-routine`, `aws-us-west-2`). Vercel region `sfo1`.
 

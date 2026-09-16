@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { dayOfWeek, dayReport, milestoneReached, streak, weekReport, type Index, type ISODate } from "../../engine";
-import { celebrateMilestone, celebratePerfectDay, celebratePerfectWeek } from "../celebrate";
+import { haptic } from "../haptics";
 import { toast } from "./toast";
 
 interface Watched {
@@ -10,8 +10,9 @@ interface Watched {
 }
 
 /**
- * Fires celebrations on *transitions* made in this session — never on load,
- * so opening the app on day 30 doesn't re-celebrate what already happened.
+ * Marks milestones, perfect days and perfect weeks on *transitions* made in
+ * this session — never on load, so opening the app on day 30 doesn't
+ * re-announce what already happened.
  */
 export function useCelebrations(idx: Index | null, today: ISODate, enabled: boolean) {
   const prev = useRef<Watched | null>(null);
@@ -35,23 +36,23 @@ export function useCelebrations(idx: Index | null, today: ISODate, enabled: bool
     prev.current = now;
     if (!before || !enabled || !idx) return;
 
-    let celebrated = false;
+    let announced = false;
     for (const r of idx.routines) {
       const cur = now.streaks[r.id] ?? 0;
       const old = before.streaks[r.id] ?? 0;
       const unit = idx.cadenceFor(r, today)?.kind === "weekly" ? "weeks" : "days";
       const hit = milestoneReached({ unit, current: cur });
       if (hit !== null && cur > old) {
-        celebrateMilestone();
+        haptic("milestone");
         toast(`${hit}-${unit === "days" ? "day" : "week"} streak · ${r.emoji} ${r.name}`, "info", { ms: 5000 });
-        celebrated = true;
+        announced = true;
       }
     }
     if (now.perfectWeek && !before.perfectWeek) {
-      celebratePerfectWeek();
+      haptic("milestone");
       toast("Perfect week ♥", "info", { ms: 5000 });
-    } else if (now.perfectDay && !before.perfectDay && !celebrated) {
-      celebratePerfectDay();
+    } else if (now.perfectDay && !before.perfectDay && !announced) {
+      haptic("success");
     }
   }, [now, enabled, idx, today]);
 }
