@@ -10,6 +10,11 @@
   --color-secondary: #594a4e;
   --color-highlight: #ff7777;
 
+  /* Semantic tones for streak/week states, kept in the site's warm palette. */
+  --color-good: #ff7777;
+  --color-warn: #d9973a;
+  --color-bad: #c94f6d;
+
   --shadow-xs: 0 -1px 3px rgb(0 0 0 / 0.01), -1px 0 3px rgb(0 0 0 / 0.015), 1px 0 3px rgb(0 0 0 / 0.015), 0 2px 6px rgb(0 0 0 / 0.025);
   --shadow-sm: 0 -1px 4px rgb(0 0 0 / 0.015), -2px 0 6px rgb(0 0 0 / 0.02), 2px 0 6px rgb(0 0 0 / 0.02), 0 3px 8px rgb(0 0 0 / 0.04);
   --shadow-md: 0 -2px 6px rgb(0 0 0 / 0.02), -3px 0 8px rgb(0 0 0 / 0.025), 3px 0 8px rgb(0 0 0 / 0.025), 0 4px 12px rgb(0 0 0 / 0.05);
