@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { DEFAULT_CUTOFF_HOUR, Index, todayFor, type ISODate, type Snapshot } from "../../engine";
-import { SNAPSHOT_KEY } from "./outbox";
-import { usePending } from "./pending";
+import { SNAPSHOT_KEY, usePending } from "./outbox";
 
 async function fetchSnapshot(fresh: boolean): Promise<Snapshot> {
   const res = await fetch(fresh ? `/api/snapshot.json?fresh=${Date.now()}` : "/api/snapshot.json");
@@ -15,6 +14,8 @@ export function useSnapshotQuery(owner: boolean) {
     queryKey: SNAPSHOT_KEY,
     queryFn: () => fetchSnapshot(owner),
     staleTime: 30_000,
+    // Kept for a month so the persisted copy renders instantly (and offline).
+    gcTime: 30 * 24 * 60 * 60 * 1000,
   });
 }
 

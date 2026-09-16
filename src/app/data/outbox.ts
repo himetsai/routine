@@ -1,55 +1,49 @@
-import { actions, isActionError } from "astro:actions";
+import { actions } from "astro:actions";
 import type { QueryClient } from "@tanstack/react-query";
+import { get, set } from "idb-keyval";
+import { useSyncExternalStore } from "react";
 import type { RoutineEvent, Snapshot } from "../../engine";
-import { pendingStore } from "./pending";
+import { createOutbox } from "./outboxCore";
 import { toast } from "./toast";
 
 export const SNAPSHOT_KEY = ["snapshot"] as const;
+const STORAGE_KEY = "routine:outbox";
 
 let client: QueryClient | null = null;
-let flushing: Promise<void> | null = null;
+
+export const outbox = createOutbox({
+  async send(event) {
+    try {
+      const { error } = await actions.logEvent(event);
+      if (!error) return { ok: true };
+      // 5xx (cold start hiccup, deploy in progress) is transient; 4xx is the server's verdict.
+      return error.status >= 500 ? { ok: false, offline: true } : { ok: false, rejected: error.message };
+    } catch {
+      return { ok: false, offline: true };
+    }
+  },
+  onConfirm(event) {
+    client?.setQueryData<Snapshot>(SNAPSHOT_KEY, (snap) =>
+      snap && !snap.events.some((e) => e.id === event.id) ? { ...snap, events: [...snap.events, event] } : snap,
+    );
+  },
+  onReject(_, message) {
+    toast(message, "error");
+  },
+  storage: {
+    load: async () => (await get<RoutineEvent[]>(STORAGE_KEY)) ?? [],
+    save: (events) => set(STORAGE_KEY, events),
+  },
+});
 
 export function bindOutbox(queryClient: QueryClient) {
   client = queryClient;
 }
 
-/** Record an event locally and start sending. Returns immediately. */
-export function enqueue(event: RoutineEvent) {
-  pendingStore.add(event);
-  void flush();
-}
+export const enqueue = outbox.enqueue;
+export const flush = outbox.flush;
 
-/**
- * Send pending events in order. Definitive rejections (auth, validation,
- * budget) drop the event and tell the user; network failures leave it
- * pending for the next flush.
- */
-export function flush(): Promise<void> {
-  if (flushing) return flushing;
-  flushing = (async () => {
-    for (const event of pendingStore.get()) {
-      const { error } = await actions.logEvent(event);
-      if (!error) {
-        confirm(event);
-        continue;
-      }
-      if (isActionError(error)) {
-        pendingStore.remove(event.id);
-        toast(error.message, "error");
-        continue;
-      }
-      break; // network: stop here, keep order, retry later
-    }
-  })().finally(() => {
-    flushing = null;
-  });
-  return flushing;
-}
-
-/** The server has the event: move it from pending into the cached snapshot. */
-function confirm(event: RoutineEvent) {
-  client?.setQueryData<Snapshot>(SNAPSHOT_KEY, (snap) =>
-    snap && !snap.events.some((e) => e.id === event.id) ? { ...snap, events: [...snap.events, event] } : snap,
-  );
-  pendingStore.remove(event.id);
+/** Events recorded on this device that the server has not confirmed yet. */
+export function usePending(): RoutineEvent[] {
+  return useSyncExternalStore(outbox.subscribe, outbox.get, outbox.get);
 }

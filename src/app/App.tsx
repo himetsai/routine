@@ -1,5 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useCallback, useEffect, useState } from "react";
+import { registerSW } from "virtual:pwa-register";
 import type { Routine } from "../engine";
 import { Overview } from "./components/Overview";
 import { RoutineCard } from "./components/RoutineCard";
@@ -8,13 +10,18 @@ import { SettingsSheet } from "./components/SettingsSheet";
 import { SignIn } from "./components/SignIn";
 import { Toasts } from "./components/Toasts";
 import { Today } from "./components/Today";
-import { bindOutbox, flush } from "./data/outbox";
+import { bindOutbox, flush, outbox, usePending } from "./data/outbox";
 import { useOwner } from "./data/owner";
+import { idbPersister } from "./data/persist";
+import { toast } from "./data/toast";
+import { useOnline } from "./data/useOnline";
 import { useIndex, useSnapshotQuery, useToday } from "./data/useSnapshot";
+
+const MONTH = 30 * 24 * 60 * 60 * 1000;
 
 function makeQueryClient() {
   const client = new QueryClient({
-    defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: true } },
+    defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: true, gcTime: MONTH } },
   });
   bindOutbox(client);
   return client;
@@ -22,11 +29,18 @@ function makeQueryClient() {
 
 export default function App() {
   const [queryClient] = useState(makeQueryClient);
+
+  useEffect(() => {
+    const updateSW = registerSW({
+      onNeedRefresh: () => toast("A new version is ready", "info", { ms: 0, action: { label: "reload", onClick: () => void updateSW(true) } }),
+    });
+  }, []);
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister: idbPersister, maxAge: MONTH }}>
       <Dashboard />
       <Toasts />
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 
@@ -34,14 +48,34 @@ type SheetState = { kind: "closed" } | { kind: "routine"; routine: Routine | nul
 
 function Dashboard() {
   const owner = useOwner();
+  const online = useOnline();
+  const pending = usePending();
   const { data, error, isPending } = useSnapshotQuery(owner);
   const idx = useIndex(data);
   const today = useToday(data?.settings.dayCutoffHour);
   const [sheet, setSheet] = useState<SheetState>({ kind: "closed" });
   const close = useCallback(() => setSheet({ kind: "closed" }), []);
 
+  // Restore the unsent queue, then deliver whenever we can: on sign-in, on
+  // reconnect, and whenever the app comes back to the foreground.
   useEffect(() => {
-    if (owner) void flush();
+    let cancelled = false;
+    void outbox.hydrate().then(() => {
+      if (!cancelled && owner) void flush();
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [owner]);
+  useEffect(() => {
+    if (!owner) return;
+    const kick = () => document.visibilityState === "visible" && void flush();
+    window.addEventListener("online", kick);
+    document.addEventListener("visibilitychange", kick);
+    return () => {
+      window.removeEventListener("online", kick);
+      document.removeEventListener("visibilitychange", kick);
+    };
   }, [owner]);
 
   // Keep the sheet's routine fresh after edits.
@@ -50,9 +84,14 @@ function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end gap-3 px-1">
+      <div className="flex items-center justify-end gap-3 px-1 text-xs">
+        {!online ? (
+          <span className="mr-auto rounded-full bg-primary/10 px-2 py-0.5 font-bold text-secondary">offline{pending.length ? ` · ${pending.length} to sync` : ""}</span>
+        ) : pending.length ? (
+          <span className="mr-auto rounded-full bg-primary/5 px-2 py-0.5 font-bold text-secondary/70">syncing…</span>
+        ) : null}
         {owner && idx ? (
-          <button type="button" onClick={() => setSheet({ kind: "settings" })} className="text-xs text-secondary/60 hover:text-secondary">
+          <button type="button" onClick={() => setSheet({ kind: "settings" })} className="text-secondary/60 hover:text-secondary">
             settings
           </button>
         ) : null}
