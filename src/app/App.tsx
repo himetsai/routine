@@ -8,12 +8,14 @@ import { RoutineCard } from "./components/RoutineCard";
 import { RoutineSheet } from "./components/RoutineSheet";
 import { SettingsSheet } from "./components/SettingsSheet";
 import { SignIn } from "./components/SignIn";
+import { SummaryCard } from "./components/SummaryCard";
 import { Toasts } from "./components/Toasts";
 import { Today } from "./components/Today";
 import { bindOutbox, flush, outbox, usePending } from "./data/outbox";
 import { useOwner } from "./data/owner";
 import { idbPersister } from "./data/persist";
 import { toast } from "./data/toast";
+import { useCelebrations } from "./data/useCelebrations";
 import { useOnline } from "./data/useOnline";
 import { useIndex, useSnapshotQuery, useToday } from "./data/useSnapshot";
 
@@ -55,6 +57,7 @@ function Dashboard() {
   const today = useToday(data?.settings.dayCutoffHour);
   const [sheet, setSheet] = useState<SheetState>({ kind: "closed" });
   const close = useCallback(() => setSheet({ kind: "closed" }), []);
+  useCelebrations(idx, today, owner);
 
   // Restore the unsent queue, then deliver whenever we can: on sign-in, on
   // reconnect, and whenever the app comes back to the foreground.
@@ -99,6 +102,7 @@ function Dashboard() {
       </div>
       {idx ? (
         <>
+          {owner ? <SummaryCard idx={idx} today={today} /> : null}
           <Today idx={idx} today={today} owner={owner} onOpen={openRoutine} onCreate={() => setSheet({ kind: "routine", routine: null })} />
           <Overview idx={idx} today={today} />
           {idx.routines
