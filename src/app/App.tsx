@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Overview } from "./components/Overview";
+import { RoutineCard } from "./components/RoutineCard";
 import { SignIn } from "./components/SignIn";
 import { Toasts } from "./components/Toasts";
 import { Today } from "./components/Today";
@@ -41,7 +43,15 @@ function Dashboard() {
         <SignIn owner={owner} />
       </div>
       {idx ? (
-        <Today idx={idx} today={today} owner={owner} />
+        <>
+          <Today idx={idx} today={today} owner={owner} />
+          <Overview idx={idx} today={today} />
+          {idx.routines
+            .filter((r) => idx.exists(r, today))
+            .map((r) => (
+              <RoutineCard key={r.id} idx={idx} routine={r} today={today} />
+            ))}
+        </>
       ) : error ? (
         <section className="card p-6 text-secondary">Couldn't load. {String(error.message)}</section>
       ) : isPending ? (
