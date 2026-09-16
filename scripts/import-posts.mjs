@@ -1,6 +1,6 @@
 // Import himetsai.com posts as completions of a weekly routine.
 //
-//   DATABASE_URL=… DATABASE_AUTH_TOKEN=… node scripts/import-posts.mjs [--routine Shitpost] [--collection shitpost] [--site ~/himetsai.com]
+//   DATABASE_URL=… DATABASE_AUTH_TOKEN=… node scripts/import-posts.mjs [--routine Shitpost] [--collection shitpost] [--site ~/himetsai.com] [--start YYYY-MM-DD]
 //
 // Each post is marked done on its routine-day: the wall-clock date in its
 // `pubDate`, shifted back a day when it was published before the app's day
@@ -9,6 +9,9 @@
 // get a `skip` on their Sunday — the app's own way of excusing a week — so the
 // streak reflects "never missed a week's worth of posts" while the heatmap
 // still shows honest publish dates. Weeks after the newest post are left alone.
+//
+// `--start` (a Monday) makes the routine begin that week and files any earlier
+// post as that first week's post — for a history that opened on a Sunday.
 //
 // Idempotent: event ids derive from the slug (or the skipped week); re-runs
 // realign dates and drop skips for weeks that have since gained a post.
@@ -24,6 +27,7 @@ const arg = (name, fallback) => {
 };
 const routineName = arg("routine", "Shitpost");
 const collection = arg("collection", "shitpost");
+const start = arg("start", null);
 const site = arg("site", join(homedir(), "himetsai.com")).replace(/^~/, homedir());
 const dir = join(site, "src/content", collection);
 if (!existsSync(dir)) throw new Error(`No collection at ${dir}`);
@@ -49,6 +53,7 @@ const posts = readdirSync(dir, { withFileTypes: true })
   .filter(Boolean)
   .sort((a, b) => a.forDate.localeCompare(b.forDate) || a.loggedAt.localeCompare(b.loggedAt));
 if (posts.length === 0) throw new Error("No posts found");
+if (start) for (const p of posts) if (p.forDate < start) p.forDate = start;
 
 const { rows } = await db.execute({ sql: "select id, created_on from routines where name = ? collate nocase", args: [routineName] });
 const routine = rows[0];
