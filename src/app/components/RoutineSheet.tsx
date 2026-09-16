@@ -17,7 +17,7 @@ import { haptic } from "../haptics";
 import { DayStrip } from "./DayStrip";
 import { Sheet } from "./Sheet";
 
-export const PALETTE = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"];
+export const PALETTE = ["#ff7777", "#fb923c", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"];
 const EMOJI = ["📖", "🏋️", "✍️", "🧘", "🏃", "💧", "🦷", "🎹", "🇯🇵", "🧹", "💊", "🌙"];
 
 interface Props {

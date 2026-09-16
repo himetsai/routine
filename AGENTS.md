@@ -26,12 +26,13 @@ bug). Install with `npx -y npm@11.19.1 install` instead.
   Derived data (day status, streaks, grades, heatmaps, milestones) is computed from an
   `Index` over a `Snapshot`; nothing derived is ever stored.
 - **Tailwind 4**, semantic tokens in `src/styles/global.css` `@theme`:
-  `bg/surface/border/fg/muted/accent/good/warn/bad` plus `heat-0…4` (GitHub's green
-  scale). Dark values are set on `:root` under `prefers-color-scheme: dark`, so every
-  utility flips with the system. Notion/Cursor feel: system font stack (no web fonts),
-  flat bordered cards, no shadows on cards, one accent, per-routine colors carry the
-  only saturation. No confetti — milestones are a toast plus a haptic. Don't reintroduce
-  the himetsai.com theme.
+  `bg/surface/border/fg/muted/accent/good/warn/bad` plus `heat-0…4`. Light-only, by
+  decision (no dark mode). Theme is built around himetsai.com's coral `#ff7777` on the
+  homepage's warm off-white `#f4ece9` with the site's dark-brown text — but with a
+  modern structure: system font stack (no web fonts, no Montserrat/Atkinson), flat
+  bordered white cards, no gradients or blur, no site header. `good` (`#e05c5c`) is the
+  readable coral for small text; `accent` is for fills. Heatmap scale is coral tints.
+  No confetti — milestones are a toast plus a haptic.
 - **Data**: Drizzle + `@libsql/client`. Local dev `DATABASE_URL=file:local.db`;
   production Turso (`himetsai-routine`, `aws-us-west-2`). Vercel region `sfo1`.
 

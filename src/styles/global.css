@@ -1,55 +1,38 @@
 @import "tailwindcss";
 
 /*
- * Neutral, Notion/Cursor-style tokens. Utilities reference these variables, so
- * the dark override below flips the whole UI with the system setting.
+ * A light theme built around himetsai.com's coral (#ff7777) on the homepage's
+ * warm off-white (#f4ece9), with the site's dark-brown text. Modern structure:
+ * system fonts, flat bordered white cards, one accent.
  */
 @theme {
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 
-  --color-bg: #ffffff;
+  --color-bg: #f4ece9;
   --color-surface: #ffffff;
-  --color-border: #e9e9e7;
-  --color-fg: #37352f;
-  --color-muted: #787774;
-  --color-accent: #2383e2;
-  --color-good: #16a34a;
-  --color-warn: #d97706;
-  --color-bad: #dc2626;
+  --color-border: #eadfdb;
+  --color-fg: #33272a;
+  --color-muted: #7a6a6d;
+  --color-accent: #ff7777;
+  /* Coral is too light for small text on white; `good` is its readable sibling. */
+  --color-good: #e05c5c;
+  --color-warn: #c98a2e;
+  --color-bad: #b83a4b;
 }
 
 /* Referenced from JS via var(), not by utilities, so they must be emitted unconditionally. */
 @theme static {
-  /* Overall heatmap scale (GitHub's). */
-  --color-heat-0: #ebedf0;
-  --color-heat-1: #9be9a8;
-  --color-heat-2: #40c463;
-  --color-heat-3: #30a14e;
-  --color-heat-4: #216e39;
+  /* Overall heatmap scale: coral tints. */
+  --color-heat-0: #f1e7e4;
+  --color-heat-1: #ffd6d6;
+  --color-heat-2: #ffb3b3;
+  --color-heat-3: #ff8f8f;
+  --color-heat-4: #f25757;
 }
 
 @layer base {
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-bg: #191919;
-      --color-surface: #202020;
-      --color-border: #2e2e2e;
-      --color-fg: #d4d4d4;
-      --color-muted: #9a9a97;
-      --color-accent: #529cca;
-      --color-good: #4ade80;
-      --color-warn: #fbbf24;
-      --color-bad: #f87171;
-      --color-heat-0: #2a2a2a;
-      --color-heat-1: #0e4429;
-      --color-heat-2: #006d32;
-      --color-heat-3: #26a641;
-      --color-heat-4: #39d353;
-    }
-  }
-
   html {
-    color-scheme: light dark;
+    color-scheme: light;
   }
 
   body {
@@ -59,7 +42,7 @@
   }
 
   ::selection {
-    @apply bg-accent/25;
+    @apply bg-accent/30;
   }
 
   button,
@@ -78,18 +61,18 @@
   }
 
   .field {
-    @apply mt-1 rounded-lg border border-border bg-surface px-3 py-2 text-[15px] text-fg outline-none transition-shadow focus:border-accent focus:ring-2 focus:ring-accent/25;
+    @apply mt-1 rounded-lg border border-border bg-surface px-3 py-2 text-[15px] text-fg outline-none transition-shadow focus:border-accent focus:ring-2 focus:ring-accent/30;
   }
 
   .btn-primary {
-    @apply rounded-lg bg-fg px-4 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-90 disabled:opacity-40;
+    @apply rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-good disabled:opacity-40;
   }
 
   .btn-secondary {
-    @apply rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition-colors hover:bg-fg/5 disabled:opacity-40;
+    @apply rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition-colors hover:bg-bg disabled:opacity-40;
   }
 
   .link {
-    @apply text-muted transition-colors hover:text-fg;
+    @apply text-muted transition-colors hover:text-good;
   }
 }
