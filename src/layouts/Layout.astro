@@ -3,10 +3,9 @@ interface Props {
   title?: string;
 }
 
-const { title = "routine" } = Astro.props;
+const { title = "Routine" } = Astro.props;
 
 import "../styles/global.css";
-import Background from "../components/Background.astro";
 ---
 
 <!doctype html>
@@ -16,7 +15,8 @@ import Background from "../components/Background.astro";
     <meta name="description" content="Ray's routine — streaks, grades, and a heatmap." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#ffccd5" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#191919" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -26,16 +26,8 @@ import Background from "../components/Background.astro";
     <meta name="apple-mobile-web-app-title" content="Routine" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Montserrat:wght@700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
-    <Background />
     <div class="min-h-screen">
       <slot />
     </div>

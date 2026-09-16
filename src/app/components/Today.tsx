@@ -41,51 +41,40 @@ export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
   const open = owner ? onOpen : undefined;
 
   return (
-    <section className="card p-5 sm:p-6">
+    <section className="card p-4 sm:p-5">
       <header className="flex items-baseline justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold">Today</h1>
-        <div className="text-right">
-          <div className="text-sm text-secondary">{formatDay(today)}</div>
-          {report.due > 0 ? (
-            <div className={`text-xs font-bold tabular-nums ${report.perfect ? "text-good" : "text-secondary/70"}`}>
-              {report.done}/{report.due} done{report.perfect ? " · perfect day" : ""}
-            </div>
-          ) : null}
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Today</h1>
+          <div className="text-sm text-muted">{formatDay(today)}</div>
         </div>
+        {report.due > 0 ? (
+          <div className={`text-sm font-medium tabular-nums ${report.perfect ? "text-good" : "text-muted"}`}>
+            {report.done}/{report.due}
+            {report.perfect ? " · perfect day" : ""}
+          </div>
+        ) : null}
       </header>
 
       {empty ? (
-        <p className="mt-4 text-secondary">No routines yet.{owner ? " Add one to start a streak." : ""}</p>
+        <p className="mt-4 text-sm text-muted">No routines yet.{owner ? " Add one to start a streak." : ""}</p>
       ) : (
-        <ul className="mt-3 divide-y divide-primary/5">
+        <ul className="mt-3">
           {active.map(({ routine, status }) => (
             <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} onOpen={open} />
           ))}
           {weekly.map(({ routine, eval: ev, status }) => (
-            <RoutineRow
-              key={routine.id}
-              routine={routine}
-              status={status}
-              week={ev}
-              owner={owner}
-              onToggle={toggle}
-              onOpen={open}
-            />
+            <RoutineRow key={routine.id} routine={routine} status={status} week={ev} owner={owner} onToggle={toggle} onOpen={open} />
           ))}
         </ul>
       )}
 
       {paused.length > 0 ? (
-        <div className="mt-3 border-t border-primary/5 pt-3">
-          <button
-            type="button"
-            onClick={() => setShowPaused((v) => !v)}
-            className="text-xs font-bold uppercase tracking-widest text-secondary/60 hover:text-secondary"
-          >
-            paused ({paused.length}) {showPaused ? "▾" : "▸"}
+        <div className="mt-2 border-t border-border pt-2">
+          <button type="button" onClick={() => setShowPaused((v) => !v)} className="link text-xs font-medium">
+            {showPaused ? "▾" : "▸"} Paused ({paused.length})
           </button>
           {showPaused ? (
-            <ul className="mt-1 divide-y divide-primary/5">
+            <ul className="mt-1">
               {paused.map(({ routine, status }) => (
                 <RoutineRow key={routine.id} routine={routine} status={status} owner={owner} onToggle={toggle} onOpen={open} />
               ))}
@@ -95,8 +84,13 @@ export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
       ) : null}
 
       {owner ? (
-        <button type="button" onClick={onCreate} className="mt-4 w-full rounded-xl border border-dashed border-primary/20 py-2 text-sm font-bold text-secondary/70 hover:border-highlight hover:text-highlight">
-          + new routine
+        <button
+          type="button"
+          onClick={onCreate}
+          className="mt-3 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted transition-colors hover:bg-fg/[0.03] hover:text-fg"
+        >
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-border text-base leading-none">+</span>
+          New routine
         </button>
       ) : null}
     </section>

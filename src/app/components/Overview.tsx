@@ -1,9 +1,6 @@
 import { useMemo } from "react";
 import { addDays, overallHeatmap, trend, weekReport, weekStart, type Index, type ISODate, type WeekReport } from "../../engine";
-import { Heatmap, shortDate, withAlpha, type HeatCell } from "./Heatmap";
-
-const CORAL = "#ff7777";
-const LEVEL_FILL = ["rgba(51,39,42,0.06)", withAlpha(CORAL, 0.3), withAlpha(CORAL, 0.5), withAlpha(CORAL, 0.75), CORAL];
+import { Heatmap, shortDate, type HeatCell } from "./Heatmap";
 
 interface Props {
   idx: Index;
@@ -23,7 +20,7 @@ export function Overview({ idx, today }: Props) {
     const detail = c.level === null ? "paused" : emojis ? emojis : "nothing done";
     return {
       date: c.date,
-      fill: c.level === null ? "transparent" : LEVEL_FILL[c.level]!,
+      fill: c.level === null ? "transparent" : `var(--color-heat-${c.level})`,
       star: c.report.perfect,
       label: `${shortDate(c.date)}\n${detail}${c.report.perfect ? " · perfect day" : ""}`,
     };
@@ -31,34 +28,34 @@ export function Overview({ idx, today }: Props) {
 
   return (
     <>
-      <section className="card p-5 sm:p-6">
+      <section className="card p-4 sm:p-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <WeekHeadline report={thisWeek} />
           <dl className="flex gap-6 text-right">
-            <Stat label="last week" value={lastWeek.letter ?? "–"} sub={lastWeek.score !== null ? `${lastWeek.score}` : undefined} />
+            <Stat label="Last week" value={lastWeek.letter ?? "–"} sub={lastWeek.score !== null ? `${lastWeek.score}` : undefined} />
             <Stat label="4-week avg" value={avg !== null ? `${avg}` : "–"} />
           </dl>
         </div>
-        <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+        <ul className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
           {thisWeek.routines.map((g) => (
             <li key={g.routine.id} className="flex items-center justify-between gap-3">
               <span className="truncate">
                 <span className="mr-1.5">{g.routine.emoji}</span>
                 {g.routine.name}
               </span>
-              <span className="shrink-0 tabular-nums text-secondary">
+              <span className="shrink-0 tabular-nums text-muted">
                 {g.kind === "weekly" ? `${g.eval.done}/${g.eval.target}` : `${g.eval.done}/${g.eval.due}`}
-                {g.ratio !== null ? <span className="ml-2 inline-block w-12 text-right font-bold text-primary">{Math.round(g.ratio * 100)}%</span> : null}
+                {g.ratio !== null ? <span className="ml-2 inline-block w-12 text-right font-medium text-fg">{Math.round(g.ratio * 100)}%</span> : null}
               </span>
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="card p-5 sm:p-6">
+      <section className="card p-4 sm:p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="font-display text-lg font-bold">Last 52 weeks</h2>
-          <p className="text-xs font-bold tabular-nums text-secondary/70">
+          <h2 className="font-semibold tracking-tight">Last 52 weeks</h2>
+          <p className="text-xs tabular-nums text-muted">
             {heat.perfectDays} perfect {heat.perfectDays === 1 ? "day" : "days"} · {heat.perfectWeeks} perfect {heat.perfectWeeks === 1 ? "week" : "weeks"}
           </p>
         </div>
@@ -71,16 +68,13 @@ export function Overview({ idx, today }: Props) {
 }
 
 function WeekHeadline({ report }: { report: WeekReport }) {
-  const label = report.final ? "This week" : "This week so far";
   return (
     <div>
-      <div className="text-xs font-bold uppercase tracking-widest text-secondary/60">{label}</div>
+      <div className="label">{report.final ? "This week" : "This week so far"}</div>
       <div className="mt-1 flex items-baseline gap-3">
-        <span className="font-display text-4xl font-bold tabular-nums text-primary">{report.score !== null ? `${report.score}%` : "–"}</span>
-        {report.letter && report.final ? <span className="font-display text-2xl font-bold text-highlight">{report.letter}</span> : null}
-        {!report.final && report.score !== null ? (
-          <span className="text-xs text-secondary/70">letter on Sunday night</span>
-        ) : null}
+        <span className="text-4xl font-semibold tabular-nums tracking-tight">{report.score !== null ? `${report.score}%` : "–"}</span>
+        {report.letter && report.final ? <span className="text-2xl font-semibold text-good">{report.letter}</span> : null}
+        {!report.final && report.score !== null ? <span className="text-xs text-muted">letter on Sunday night</span> : null}
       </div>
     </div>
   );
@@ -89,10 +83,10 @@ function WeekHeadline({ report }: { report: WeekReport }) {
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <dt className="text-xs font-bold uppercase tracking-widest text-secondary/60">{label}</dt>
-      <dd className="mt-1 font-display text-2xl font-bold tabular-nums">
+      <dt className="label">{label}</dt>
+      <dd className="mt-1 text-2xl font-semibold tabular-nums tracking-tight">
         {value}
-        {sub ? <span className="ml-1 text-sm text-secondary/70">{sub}</span> : null}
+        {sub ? <span className="ml-1 text-sm font-normal text-muted">{sub}</span> : null}
       </dd>
     </div>
   );

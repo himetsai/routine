@@ -17,7 +17,7 @@ import { haptic } from "../haptics";
 import { DayStrip } from "./DayStrip";
 import { Sheet } from "./Sheet";
 
-export const PALETTE = ["#ff7777", "#dda0dd", "#f4a261", "#8ecae6", "#95d5b2", "#f9c74f", "#c9a0dc", "#ffb6c1"];
+export const PALETTE = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"];
 const EMOJI = ["📖", "🏋️", "✍️", "🧘", "🏃", "💧", "🦷", "🎹", "🇯🇵", "🧹", "💊", "🌙"];
 
 interface Props {
@@ -171,7 +171,7 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
         </div>
         <div className="flex flex-wrap gap-1.5">
           {EMOJI.map((e) => (
-            <button key={e} type="button" onClick={() => set("emoji", e)} className={`rounded-lg px-1.5 py-1 text-xl hover:bg-primary/5 ${draft.emoji === e ? "bg-primary/10" : ""}`}>
+            <button key={e} type="button" onClick={() => set("emoji", e)} className={`rounded-md px-1.5 py-1 text-xl hover:bg-fg/5 ${draft.emoji === e ? "bg-fg/10" : ""}`}>
               {e}
             </button>
           ))}
@@ -186,8 +186,8 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
                 type="button"
                 aria-label={c}
                 onClick={() => set("color", c)}
-                className="h-8 w-8 rounded-full border-2 transition-transform hover:scale-110"
-                style={{ backgroundColor: c, borderColor: draft.color === c ? "#33272a" : "transparent" }}
+                className="h-7 w-7 rounded-full border-2 transition-transform hover:scale-110"
+                style={{ backgroundColor: c, borderColor: draft.color === c ? "var(--color-fg)" : "transparent" }}
               />
             ))}
           </div>
@@ -223,12 +223,12 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
                   onChange={(e) => set("cadence", { kind: "weekly", timesPerWeek: Math.min(6, Math.max(1, Number(e.target.value) || 1)) })}
                   className="field w-16 text-center"
                 />
-                <span className="text-secondary">×</span>
+                <span className="text-muted">×</span>
               </label>
             ) : null}
           </div>
           {routine && JSON.stringify(idx.cadenceFor(routine, today)) !== JSON.stringify(draft.cadence) ? (
-            <p className="mt-1 text-xs text-secondary/70">Takes effect next Monday; this week keeps its current target.</p>
+            <p className="mt-1 text-xs text-muted/70">Takes effect next Monday; this week keeps its current target.</p>
           ) : null}
         </div>
 
@@ -238,7 +238,7 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
 
         {routine ? (
           <>
-            <hr className="border-primary/10" />
+            <hr className="border-border" />
             <div>
               <span className="label">last {BACKFILL_DAYS} days</span>
               <div className="mt-1">
@@ -261,13 +261,13 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
               )}
             </div>
             {activePause ? (
-              <p className="text-xs text-secondary/70">
+              <p className="text-xs text-muted/70">
                 Paused since {activePause.startDate}
                 {activePause.endDate ? ` until ${activePause.endDate}` : ""} · {diffDays(activePause.startDate, today) + 1} days
               </p>
             ) : null}
             {pauseOpen && !activePause ? (
-              <div className="space-y-2 rounded-2xl bg-primary/5 p-3">
+              <div className="space-y-2 rounded-lg border border-border p-3">
                 <div className="flex gap-2">
                   <label className="flex-1 text-xs">
                     <span className="label">from</span>
@@ -284,22 +284,22 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
               </div>
             ) : null}
 
-            <div className="flex items-center justify-between text-xs text-secondary/70">
+            <div className="flex items-center justify-between text-xs text-muted">
               <div className="flex gap-1">
-                <button type="button" onClick={() => move(-1)} className="rounded-lg px-2 py-1 hover:bg-primary/5" aria-label="Move up">
+                <button type="button" onClick={() => move(-1)} className="link rounded-md px-2 py-1 hover:bg-fg/5" aria-label="Move up">
                   ▲ up
                 </button>
-                <button type="button" onClick={() => move(1)} className="rounded-lg px-2 py-1 hover:bg-primary/5" aria-label="Move down">
+                <button type="button" onClick={() => move(1)} className="link rounded-md px-2 py-1 hover:bg-fg/5" aria-label="Move down">
                   ▼ down
                 </button>
               </div>
               <div className="flex gap-1">
                 {canDelete ? (
-                  <button type="button" onClick={remove} className="rounded-lg px-2 py-1 text-bad hover:bg-bad/10">
+                  <button type="button" onClick={remove} className="rounded-md px-2 py-1 text-bad hover:bg-bad/10">
                     delete
                   </button>
                 ) : null}
-                <button type="button" onClick={archive} className="rounded-lg px-2 py-1 hover:bg-primary/5">
+                <button type="button" onClick={archive} className="link rounded-md px-2 py-1 hover:bg-fg/5">
                   archive
                 </button>
               </div>
@@ -313,13 +313,13 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
 
 function Segmented<T extends string | number>({ options, value, onChange }: { options: { value: T; label: string }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div className="mt-1 inline-flex rounded-xl bg-primary/5 p-1">
+    <div className="mt-1 inline-flex rounded-lg bg-fg/5 p-0.5">
       {options.map((o) => (
         <button
           key={String(o.value)}
           type="button"
           onClick={() => onChange(o.value)}
-          className={`rounded-lg px-3 py-1 text-sm font-bold transition-colors ${o.value === value ? "bg-white text-primary shadow-xs" : "text-secondary hover:text-primary"}`}
+          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${o.value === value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"}`}
         >
           {o.label}
         </button>

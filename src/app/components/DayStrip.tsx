@@ -1,6 +1,7 @@
 import { addDays, BACKFILL_DAYS, dayStatus, type Index, type ISODate, type Routine } from "../../engine";
 import { enqueue } from "../data/outbox";
 import { haptic } from "../haptics";
+import { withAlpha } from "./Heatmap";
 
 interface Props {
   idx: Index;
@@ -40,14 +41,16 @@ export function DayStrip({ idx, routine, today }: Props) {
             disabled={dead}
             onClick={() => toggle(date)}
             title={`${date} · ${status}`}
-            className="flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-xs transition-colors hover:bg-primary/5 disabled:opacity-30"
+            className="flex flex-1 flex-col items-center gap-1 rounded-lg py-1.5 text-xs transition-colors hover:bg-fg/[0.03] disabled:opacity-30"
           >
-            <span className="text-secondary/60">{weekday}</span>
+            <span className="text-muted">{weekday}</span>
             <span
-              className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-[11px] font-bold tabular-nums transition-colors"
+              className={`flex h-8 w-8 items-center justify-center rounded-full border-[1.5px] text-[11px] font-medium tabular-nums transition-colors ${
+                done || status === "skipped" ? "" : status === "paused" ? "border-transparent bg-fg/10" : "border-border"
+              }`}
               style={{
-                borderColor: done ? routine.color : status === "skipped" ? routine.color : "rgba(89,74,78,0.25)",
-                backgroundColor: done ? routine.color : status === "skipped" ? `${routine.color}33` : status === "paused" ? "rgba(51,39,42,0.08)" : "transparent",
+                borderColor: done || status === "skipped" ? routine.color : undefined,
+                backgroundColor: done ? routine.color : status === "skipped" ? withAlpha(routine.color, 0.2) : undefined,
                 color: done ? "white" : undefined,
               }}
             >

@@ -20,8 +20,8 @@ export default defineConfig({
         start_url: "/",
         scope: "/",
         display: "standalone",
-        background_color: "#ffccd5",
-        theme_color: "#ffccd5",
+        background_color: "#ffffff",
+        theme_color: "#ffffff",
         icons: [
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
@@ -31,13 +31,6 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,webmanifest}"],
         navigateFallbackDenylist: [/^\/api\//, /^\/_actions\//, /^\/export\./],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
-            handler: "CacheFirst",
-            options: { cacheName: "google-fonts", expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 }, cacheableResponse: { statuses: [0, 200] } },
-          },
-        ],
       },
     }),
   ],

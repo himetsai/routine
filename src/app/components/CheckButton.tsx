@@ -16,28 +16,25 @@ interface Props {
  */
 export function CheckButton({ checked, disabled, color, label, onToggle }: Props) {
   return (
-    <span className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full">
+    <span className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
       <motion.span
         aria-hidden
-        className="flex h-8 w-8 items-center justify-center rounded-full border-2"
-        animate={{
-          scale: checked ? [1, 1.25, 1] : 1,
-          backgroundColor: checked ? color : "rgba(255,255,255,0)",
-          borderColor: checked ? color : "rgba(89,74,78,0.35)",
-        }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
+        className="flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-border transition-colors duration-200"
+        style={{ borderColor: checked ? color : undefined, backgroundColor: checked ? color : "transparent" }}
+        animate={{ scale: checked ? [1, 1.2, 1] : 1 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
       >
         <motion.svg
           viewBox="0 0 24 24"
-          className="h-5 w-5"
+          className="h-4 w-4"
           fill="none"
           stroke="white"
-          strokeWidth={3.2}
+          strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
           initial={false}
           animate={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
         >
           <motion.path d="M5 12.5l4.5 4.5L19 7.5" />
         </motion.svg>

@@ -12,8 +12,9 @@ export function Toasts() {
             initial={{ opacity: 0, y: 12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            className={`pointer-events-auto flex items-center gap-3 rounded-full px-4 py-2 text-sm font-bold shadow-md ${
-              t.tone === "error" ? "bg-bad text-white" : "bg-primary text-background"
+            transition={{ duration: 0.18 }}
+            className={`pointer-events-auto flex items-center gap-3 rounded-lg px-3.5 py-2 text-sm font-medium shadow-lg ${
+              t.tone === "error" ? "bg-bad text-white" : "bg-fg text-bg"
             }`}
           >
             <span>{t.message}</span>
@@ -24,7 +25,7 @@ export function Toasts() {
                   t.action?.onClick();
                   dismiss(t.id);
                 }}
-                className="rounded-full bg-white/20 px-2.5 py-0.5 hover:bg-white/30"
+                className="rounded-md bg-bg/15 px-2 py-0.5 hover:bg-bg/25"
               >
                 {t.action.label}
               </button>

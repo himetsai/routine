@@ -30,16 +30,16 @@ export function SignIn({ owner }: { owner: boolean }) {
 
   if (owner) {
     return (
-      <button type="button" onClick={signOut} className="text-xs text-secondary/60 hover:text-secondary">
-        sign out
+      <button type="button" onClick={signOut} className="link">
+        Sign out
       </button>
     );
   }
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="text-xs text-secondary/60 hover:text-secondary">
-        sign in
+      <button type="button" onClick={() => setOpen(true)} className="link">
+        Sign in
       </button>
     );
   }
@@ -52,20 +52,16 @@ export function SignIn({ owner }: { owner: boolean }) {
         type="password"
         name="password"
         autoComplete="current-password"
-        placeholder="passphrase"
+        placeholder="Passphrase"
         autoFocus
         required
-        className="w-40 rounded-lg border border-primary/15 bg-white/70 px-2 py-1 text-sm outline-none focus:border-highlight"
+        className="field mt-0 w-40 py-1 text-sm"
       />
-      <button
-        type="submit"
-        disabled={busy}
-        className="rounded-lg bg-highlight px-3 py-1 text-sm font-bold text-white disabled:opacity-50"
-      >
-        {busy ? "…" : "go"}
+      <button type="submit" disabled={busy} className="btn-primary px-3 py-1.5">
+        {busy ? "…" : "Go"}
       </button>
-      <button type="button" onClick={() => setOpen(false)} className="text-xs text-secondary/60">
-        cancel
+      <button type="button" onClick={() => setOpen(false)} className="link">
+        Cancel
       </button>
     </form>
   );

@@ -14,13 +14,13 @@ function fillFor(status: DayStatus, color: string): string {
     case "done":
       return color;
     case "skipped":
-      return withAlpha(color, 0.3);
+      return withAlpha(color, 0.35);
     case "paused":
-      return "rgba(51,39,42,0.12)";
+      return "color-mix(in oklab, var(--color-fg) 12%, transparent)";
     case "missed":
-      return "rgba(201,79,109,0.18)";
+      return "color-mix(in oklab, var(--color-bad) 22%, transparent)";
     default:
-      return "rgba(51,39,42,0.05)";
+      return "var(--color-heat-0)";
   }
 }
 
@@ -49,22 +49,23 @@ export function RoutineCard({ idx, routine, today, onOpen }: Props) {
   );
   const next = nextMilestone(s);
   const cadenceLabel = cadence?.kind === "weekly" ? `${cadence.timesPerWeek}×/week` : "daily";
+  const unit = s.unit === "days" ? (s.current === 1 ? "day" : "days") : s.current === 1 ? "week" : "weeks";
 
   return (
-    <section className="card p-5 sm:p-6">
+    <section className="card p-4 sm:p-5">
       <header className="flex items-start justify-between gap-3">
         <button type="button" onClick={() => onOpen?.(routine)} className="min-w-0 text-left" disabled={!onOpen}>
-          <h3 className="flex items-center gap-2 font-display text-lg font-bold">
+          <h3 className="flex items-center gap-2 font-semibold tracking-tight">
             <span>{routine.emoji}</span>
             <span className="truncate">{routine.name}</span>
           </h3>
-          <p className="mt-0.5 text-xs text-secondary/70">{cadenceLabel}</p>
+          <p className="mt-0.5 text-xs text-muted">{cadenceLabel}</p>
         </button>
         <div className="shrink-0 text-right">
-          <div className="font-display text-2xl font-bold tabular-nums" style={{ color: s.current > 0 ? routine.color : undefined }}>
-            {s.current} <span className="text-sm">{s.unit === "days" ? (s.current === 1 ? "day" : "days") : s.current === 1 ? "week" : "weeks"}</span>
+          <div className="text-2xl font-semibold tabular-nums tracking-tight" style={{ color: s.current > 0 ? routine.color : undefined }}>
+            {s.current} <span className="text-sm font-medium">{unit}</span>
           </div>
-          <div className="text-xs text-secondary/70">
+          <div className="text-xs text-muted">
             best {s.best}
             {next ? ` · ${next - s.current} to ${next}` : ""}
           </div>

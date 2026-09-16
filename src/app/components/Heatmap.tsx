@@ -63,7 +63,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
         <svg width={LEFT + cols * step} height={7 * step} className="block" role="img" aria-label="Heatmap">
           {DOW.map((d, i) =>
             d ? (
-              <text key={i} x={0} y={i * step + size * 0.8} fontSize={size * 0.8} className="fill-secondary/50 font-sans">
+              <text key={i} x={0} y={i * step + size * 0.8} fontSize={size * 0.8} className="fill-muted/60">
                 {d}
               </text>
             ) : null,
@@ -73,10 +73,10 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
             const y = dayOfWeek(c.date) * step;
             return (
               <g key={c.date} onPointerEnter={() => setActive(i)} onPointerDown={(e) => (e.stopPropagation(), setActive(i))}>
-                <rect x={x} y={y} width={size} height={size} rx={Math.max(2, size / 4)} fill={c.fill} className="stroke-primary/5" strokeWidth={0.5} />
-                {c.star ? <circle cx={x + size / 2} cy={y + size / 2} r={size / 6} fill="white" opacity={0.9} /> : null}
+                <rect x={x} y={y} width={size} height={size} rx={Math.max(2, size / 4)} style={{ fill: c.fill }} />
+                {c.star ? <circle cx={x + size / 2} cy={y + size / 2} r={size / 6} className="fill-bg" opacity={0.9} /> : null}
                 {active === i ? (
-                  <rect x={x - 1} y={y - 1} width={size + 2} height={size + 2} rx={size / 4 + 1} fill="none" className="stroke-primary" strokeWidth={1.5} />
+                  <rect x={x - 1} y={y - 1} width={size + 2} height={size + 2} rx={size / 4 + 1} fill="none" className="stroke-fg" strokeWidth={1.5} />
                 ) : null}
               </g>
             );
@@ -85,7 +85,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
       ) : null}
       {activeCell ? (
         <div
-          className="pointer-events-none absolute z-20 whitespace-nowrap rounded-lg bg-primary px-2.5 py-1.5 text-xs text-background shadow-md"
+          className="pointer-events-none absolute z-20 whitespace-nowrap rounded-md bg-fg px-2.5 py-1.5 text-xs text-bg shadow-lg"
           style={{
             left: LEFT + col(activeCell.date) * step + size / 2,
             top: dayOfWeek(activeCell.date) * step - 6,
@@ -93,7 +93,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
           }}
         >
           {activeCell.label.split("\n").map((line, i) => (
-            <div key={i} className={i === 0 ? "font-bold" : "text-background/80"}>
+            <div key={i} className={i === 0 ? "font-semibold" : "text-bg/80"}>
               {line}
             </div>
           ))}

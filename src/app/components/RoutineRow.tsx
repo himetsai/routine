@@ -15,7 +15,7 @@ export function RoutineRow({ routine, status, week, owner, onToggle, onOpen }: P
   const done = status === "done";
   const muted = done || status === "skipped" || status === "paused";
   return (
-    <li className="flex items-center gap-3 py-2">
+    <li className="-mx-2 flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/[0.03]">
       <CheckButton
         checked={done}
         disabled={!owner || status === "paused"}
@@ -24,30 +24,32 @@ export function RoutineRow({ routine, status, week, owner, onToggle, onOpen }: P
         onToggle={(next) => onToggle(routine, next)}
       />
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => onOpen?.(routine)}
             disabled={!onOpen}
-            className="flex min-w-0 items-baseline gap-2 text-left"
+            className="flex min-w-0 items-center gap-2 text-left"
             aria-label={`Open ${routine.name}`}
           >
-            <span className="text-lg leading-none">{routine.emoji}</span>
-            <span
-              className={`truncate font-bold transition-colors duration-300 ${muted ? "text-secondary/50 line-through decoration-secondary/40" : "text-primary"}`}
-            >
+            <span className="text-base leading-none">{routine.emoji}</span>
+            <span className={`truncate font-medium transition-colors duration-200 ${muted ? "text-muted/70 line-through decoration-muted/50" : "text-fg"}`}>
               {routine.name}
             </span>
           </button>
-          <span className="ml-auto shrink-0 text-[10px] uppercase tracking-widest text-secondary/50" title={`${IMPORTANCE_LABEL[routine.importance]} importance`}>
-            {"●".repeat(routine.importance)}
+          <span className="ml-auto flex shrink-0 gap-0.5" title={`${IMPORTANCE_LABEL[routine.importance]} importance`} aria-label={`${IMPORTANCE_LABEL[routine.importance]} importance`}>
+            {[1, 2, 3].map((n) => (
+              <span key={n} className={`h-1 w-1 rounded-full ${n <= routine.importance ? "bg-muted/70" : "bg-border"}`} />
+            ))}
           </span>
         </div>
-        <div className="mt-1 flex items-center gap-2 text-xs text-secondary">
-          {week ? <WeeklyChip eval={week} /> : null}
-          {status === "skipped" ? <span className="rounded-full bg-primary/5 px-2 py-0.5 font-bold">skipped today</span> : null}
-          {status === "paused" ? <span className="rounded-full bg-primary/5 px-2 py-0.5 font-bold">paused</span> : null}
-        </div>
+        {week || status === "skipped" || status === "paused" ? (
+          <div className="mt-1 flex items-center gap-2 text-xs text-muted">
+            {week ? <WeeklyChip eval={week} /> : null}
+            {status === "skipped" ? <span className="rounded-md bg-fg/5 px-1.5 py-0.5 font-medium">skipped today</span> : null}
+            {status === "paused" ? <span className="rounded-md bg-fg/5 px-1.5 py-0.5 font-medium">paused</span> : null}
+          </div>
+        ) : null}
       </div>
     </li>
   );

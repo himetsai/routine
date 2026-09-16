@@ -28,20 +28,21 @@ export function SummaryCard({ idx, today }: Props) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: -8 }}
+      initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`card flex items-center justify-between gap-4 px-5 py-3 ${report.perfect ? "ring-2 ring-good/40" : ""}`}
+      transition={{ duration: 0.18 }}
+      className={`card flex items-center justify-between gap-4 px-4 py-2.5 ${report.perfect ? "border-good/40" : ""}`}
     >
       <p className="text-sm">
-        <span className="font-bold">Yesterday</span>
-        <span className="text-secondary">
+        <span className="font-medium">Yesterday</span>
+        <span className="text-muted">
           {report.due > 0 ? ` · ${report.done}/${report.due} daily` : ""}
           {report.perfect ? " · perfect day" : ""}
           {weeklyDone.length ? ` · ${weeklyDone.join(" ")}` : ""}
-          {lastWeek?.letter ? ` · last week: ${lastWeek.letter}${lastWeek.perfect ? " ♥" : ""}` : ""}
+          {lastWeek?.letter ? ` · last week: ${lastWeek.letter}` : ""}
         </span>
       </p>
-      <button type="button" onClick={() => setShow(false)} aria-label="Dismiss" className="text-secondary/50 hover:text-primary">
+      <button type="button" onClick={() => setShow(false)} aria-label="Dismiss" className="link">
         ✕
       </button>
     </motion.section>

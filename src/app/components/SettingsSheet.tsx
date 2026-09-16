@@ -46,21 +46,21 @@ export function SettingsSheet({ idx, today, open, onClose }: Props) {
               </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-secondary/70">A check-in before this hour still counts for the previous day.</p>
+          <p className="mt-1 text-xs text-muted/70">A check-in before this hour still counts for the previous day.</p>
         </label>
 
         <label className="flex items-center justify-between">
           <span>
-            <span className="font-bold">Vibration</span>
-            <span className="block text-xs text-secondary/70">On iPhone the check itself buzzes; this covers Android patterns.</span>
+            <span className="font-semibold">Vibration</span>
+            <span className="block text-xs text-muted/70">On iPhone the check itself buzzes; this covers Android patterns.</span>
           </span>
-          <input type="checkbox" checked={prefs.vibrate} onChange={(e) => setPrefs({ vibrate: e.target.checked })} className="h-5 w-5 accent-highlight" />
+          <input type="checkbox" checked={prefs.vibrate} onChange={(e) => setPrefs({ vibrate: e.target.checked })} className="h-4 w-4 accent-fg" />
         </label>
 
         <div>
           <span className="label">pause everything</span>
           {global ? (
-            <div className="mt-1 flex items-center justify-between gap-3 rounded-2xl bg-primary/5 p-3 text-sm">
+            <div className="mt-1 flex items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
               <span>
                 Paused since {global.startDate} · {diffDays(global.startDate, today) + 1} days
               </span>
@@ -69,7 +69,7 @@ export function SettingsSheet({ idx, today, open, onClose }: Props) {
               </button>
             </div>
           ) : (
-            <div className="mt-1 space-y-2 rounded-2xl bg-primary/5 p-3">
+            <div className="mt-1 space-y-2 rounded-lg border border-border p-3">
               <div className="flex gap-2">
                 <label className="flex-1 text-xs">
                   <span className="label">from</span>
@@ -90,7 +90,7 @@ export function SettingsSheet({ idx, today, open, onClose }: Props) {
               >
                 Pause all routines
               </button>
-              <p className="text-xs text-secondary/70">Vacation mode: nothing is due, streaks freeze.</p>
+              <p className="text-xs text-muted/70">Vacation mode: nothing is due, streaks freeze.</p>
             </div>
           )}
         </div>
@@ -105,10 +105,10 @@ export function SettingsSheet({ idx, today, open, onClose }: Props) {
               raw data (.json)
             </a>
           </div>
-          <p className="mt-1 text-xs text-secondary/70">CSV is one row per routine per day — ready for a notebook.</p>
+          <p className="mt-1 text-xs text-muted/70">CSV is one row per routine per day — ready for a notebook.</p>
         </div>
 
-        <button type="button" onClick={signOut} className="text-sm text-secondary/70 hover:text-primary">
+        <button type="button" onClick={signOut} className="link text-sm">
           sign out
         </button>
       </div>

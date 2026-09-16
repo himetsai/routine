@@ -86,19 +86,21 @@ function Dashboard() {
   const openRoutine = (routine: Routine) => setSheet({ kind: "routine", routine });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-end gap-3 px-1 text-xs">
+    <div className="space-y-3">
+      <div className="flex h-7 items-center gap-4 px-1 text-sm">
         {!online ? (
-          <span className="mr-auto rounded-full bg-primary/10 px-2 py-0.5 font-bold text-secondary">offline{pending.length ? ` · ${pending.length} to sync` : ""}</span>
+          <span className="rounded-md bg-fg/5 px-1.5 py-0.5 text-xs font-medium text-muted">offline{pending.length ? ` · ${pending.length} to sync` : ""}</span>
         ) : pending.length ? (
-          <span className="mr-auto rounded-full bg-primary/5 px-2 py-0.5 font-bold text-secondary/70">syncing…</span>
+          <span className="rounded-md bg-fg/5 px-1.5 py-0.5 text-xs font-medium text-muted">syncing…</span>
         ) : null}
-        {owner && idx ? (
-          <button type="button" onClick={() => setSheet({ kind: "settings" })} className="text-secondary/60 hover:text-secondary">
-            settings
-          </button>
-        ) : null}
-        <SignIn owner={owner} />
+        <span className="ml-auto flex items-center gap-4">
+          {owner && idx ? (
+            <button type="button" onClick={() => setSheet({ kind: "settings" })} className="link">
+              Settings
+            </button>
+          ) : null}
+          <SignIn owner={owner} />
+        </span>
       </div>
       {idx ? (
         <>
@@ -118,13 +120,13 @@ function Dashboard() {
           ) : null}
         </>
       ) : error ? (
-        <section className="card p-6 text-secondary">Couldn't load. {String(error.message)}</section>
+        <section className="card p-5 text-sm text-muted">Couldn't load. {String(error.message)}</section>
       ) : isPending ? (
-        <section className="card p-6">
-          <div className="h-7 w-24 animate-pulse rounded bg-primary/10" />
-          <div className="mt-4 space-y-3">
+        <section className="card p-5">
+          <div className="h-6 w-20 animate-pulse rounded bg-fg/10" />
+          <div className="mt-4 space-y-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-10 animate-pulse rounded-xl bg-primary/5" />
+              <div key={i} className="h-9 animate-pulse rounded-lg bg-fg/5" />
             ))}
           </div>
         </section>

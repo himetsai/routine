@@ -25,11 +25,13 @@ bug). Install with `npx -y npm@11.19.1 install` instead.
 - **`src/engine/`** — pure TypeScript, no DOM/DB. Every rule lives here and is tested.
   Derived data (day status, streaks, grades, heatmaps, milestones) is computed from an
   `Index` over a `Snapshot`; nothing derived is ever stored.
-- **Tailwind 4**, tokens in `src/styles/global.css` `@theme` — copied from the site's
-  `tailwind.config.mjs` (`background/primary/secondary/highlight`, `font-sans/display`,
-  shadow scale). Light-only by decision. The site's animated Y2K backdrop is reduced to
-  its static gradient. No site header/wordmark and no confetti — milestones are a toast
-  plus a haptic.
+- **Tailwind 4**, semantic tokens in `src/styles/global.css` `@theme`:
+  `bg/surface/border/fg/muted/accent/good/warn/bad` plus `heat-0…4` (GitHub's green
+  scale). Dark values are set on `:root` under `prefers-color-scheme: dark`, so every
+  utility flips with the system. Notion/Cursor feel: system font stack (no web fonts),
+  flat bordered cards, no shadows on cards, one accent, per-routine colors carry the
+  only saturation. No confetti — milestones are a toast plus a haptic. Don't reintroduce
+  the himetsai.com theme.
 - **Data**: Drizzle + `@libsql/client`. Local dev `DATABASE_URL=file:local.db`;
   production Turso (`himetsai-routine`, `aws-us-west-2`). Vercel region `sfo1`.
 
