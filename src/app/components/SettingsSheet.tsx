@@ -71,11 +71,11 @@ export function SettingsSheet({ idx, today, open, onClose }: Props) {
           ) : (
             <div className="mt-1 space-y-2 rounded-lg border border-border p-3">
               <div className="flex gap-2">
-                <label className="flex-1 text-xs">
+                <label className="min-w-0 flex-1 text-xs">
                   <span className="label">from</span>
                   <input type="date" value={pauseStart} min={addDays(today, -BACKFILL_DAYS)} max={today} onChange={(e) => setPauseStart(e.target.value)} className="field w-full" />
                 </label>
-                <label className="flex-1 text-xs">
+                <label className="min-w-0 flex-1 text-xs">
                   <span className="label">until (optional)</span>
                   <input type="date" value={pauseEnd} min={pauseStart} onChange={(e) => setPauseEnd(e.target.value)} className="field w-full" />
                 </label>

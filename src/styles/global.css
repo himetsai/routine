@@ -49,6 +49,15 @@
   [role="button"] {
     touch-action: manipulation;
   }
+
+  /* iOS gives date inputs an intrinsic width and its own chrome; make them behave like text fields. */
+  input[type="date"] {
+    @apply min-w-0 appearance-none leading-[2.375rem];
+  }
+
+  input[type="date"]::-webkit-date-and-time-value {
+    @apply text-left;
+  }
 }
 
 @layer components {
