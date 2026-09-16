@@ -18,7 +18,13 @@ import { DayStrip } from "./DayStrip";
 import { Sheet } from "./Sheet";
 
 export const PALETTE = ["#ff7777", "#fb923c", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"];
-const EMOJI = ["📖", "🏋️", "✍️", "🧘", "🏃", "💧", "🦷", "🎹", "🇯🇵", "🧹", "💊", "🌙"];
+const DEFAULT_EMOJI = "✅";
+
+/** The last emoji-sized grapheme the user typed, so paste or keyboard input yields exactly one. */
+function lastEmoji(value: string): string {
+  const segments = typeof Intl !== "undefined" && "Segmenter" in Intl ? [...new Intl.Segmenter().segment(value)].map((s) => s.segment) : [...value];
+  return segments.filter((s) => s.trim()).at(-1) ?? "";
+}
 
 interface Props {
   idx: Index;
@@ -46,7 +52,7 @@ function draftFor(idx: Index, routine: Routine | null, today: ISODate): Draft {
         importance: routine.importance,
         cadence: idx.cadenceFor(routine, today) ?? { kind: "daily" },
       }
-    : { name: "", emoji: EMOJI[0]!, color: PALETTE[0]!, importance: 2, cadence: { kind: "daily" } };
+    : { name: "", emoji: DEFAULT_EMOJI, color: PALETTE[0]!, importance: 2, cadence: { kind: "daily" } };
 }
 
 export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
@@ -72,6 +78,8 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
   const skipped = routine ? idx.mark(routine.id, today) === "skipped" : false;
   const left = routine ? skipsLeft(idx, routine.id, today) : 0;
   const canDelete = routine ? diffDays(routine.createdOn, today) <= 1 && !idx.hasEvents(routine.id) : false;
+  // Emojis from your other routines, like a picker's "Recent" row.
+  const recent = [...new Set(idx.routines.filter((r) => r.id !== routine?.id).map((r) => r.emoji))].slice(0, 12);
 
   async function save() {
     if (!draft.name.trim()) return;
@@ -152,9 +160,11 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
             <span className="label">emoji</span>
             <input
               value={draft.emoji}
-              onChange={(e) => set("emoji", e.target.value.slice(0, 16))}
-              className="field w-16 text-center text-2xl"
+              onChange={(e) => set("emoji", lastEmoji(e.target.value) || draft.emoji)}
+              onFocus={(e) => e.currentTarget.select()}
+              className="field w-14 text-center text-xl"
               aria-label="Emoji"
+              title="Type any emoji from your keyboard"
             />
           </label>
           <label className="block flex-1">
@@ -169,13 +179,16 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
             />
           </label>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {EMOJI.map((e) => (
-            <button key={e} type="button" onClick={() => set("emoji", e)} className={`rounded-md px-1.5 py-1 text-xl hover:bg-fg/5 ${draft.emoji === e ? "bg-fg/10" : ""}`}>
-              {e}
-            </button>
-          ))}
-        </div>
+        {recent.length ? (
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="mr-1 text-xs text-muted">Recent</span>
+            {recent.map((e) => (
+              <button key={e} type="button" onClick={() => set("emoji", e)} className={`rounded-md px-1.5 py-0.5 text-xl hover:bg-fg/5 ${draft.emoji === e ? "bg-fg/10" : ""}`}>
+                {e}
+              </button>
+            ))}
+          </div>
+        ) : null}
 
         <div>
           <span className="label">color</span>
@@ -221,7 +234,7 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
                   max={6}
                   value={draft.cadence.kind === "weekly" ? draft.cadence.timesPerWeek : 3}
                   onChange={(e) => set("cadence", { kind: "weekly", timesPerWeek: Math.min(6, Math.max(1, Number(e.target.value) || 1)) })}
-                  className="field w-16 text-center"
+                  className="field w-16 text-center tabular-nums"
                 />
                 <span className="text-muted">×</span>
               </label>
@@ -313,13 +326,13 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
 
 function Segmented<T extends string | number>({ options, value, onChange }: { options: { value: T; label: string }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div className="mt-1 inline-flex rounded-lg bg-fg/5 p-0.5">
+    <div className="mt-1 inline-flex h-10 rounded-lg bg-fg/5 p-1">
       {options.map((o) => (
         <button
           key={String(o.value)}
           type="button"
           onClick={() => onChange(o.value)}
-          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${o.value === value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"}`}
+          className={`h-full rounded-md px-3 text-sm font-medium transition-colors ${o.value === value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"}`}
         >
           {o.label}
         </button>
