@@ -89,7 +89,11 @@ export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
           onClick={onCreate}
           className="mt-3 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted transition-colors hover:bg-fg/[0.03] hover:text-fg"
         >
-          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-border text-base leading-none">+</span>
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-border">
+            <svg viewBox="0 0 12 12" className="h-3 w-3" aria-hidden>
+              <path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" />
+            </svg>
+          </span>
           New routine
         </button>
       ) : null}

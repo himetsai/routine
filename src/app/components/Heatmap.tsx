@@ -18,6 +18,8 @@ interface Props {
 
 const DOW = ["M", "", "W", "", "F", "", ""];
 const LEFT = 14;
+/** Room for the 1.5px highlight ring around edge cells. */
+const PAD = 2;
 
 /**
  * GitHub-style grid: one column per Monday-aligned week, one row per weekday.
@@ -49,7 +51,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
   }, [active]);
 
   const last = allCells[allCells.length - 1]?.date;
-  const fitWeeks = available === null ? Infinity : Math.max(4, Math.floor((available - LEFT) / step));
+  const fitWeeks = available === null ? Infinity : Math.max(4, Math.floor((available - LEFT - PAD * 2) / step));
   const firstVisible = last && fitWeeks !== Infinity ? addDays(weekStart(last), -7 * (fitWeeks - 1)) : null;
   const cells = firstVisible ? allCells.filter((c) => c.date >= firstVisible) : allCells;
   const start = cells[0]?.date;
@@ -60,17 +62,17 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
   return (
     <div ref={container} className="relative w-full pb-1" onPointerLeave={() => setActive(null)}>
       {start ? (
-        <svg width={LEFT + cols * step} height={7 * step} className="block" role="img" aria-label="Heatmap">
+        <svg width={LEFT + cols * step + PAD * 2} height={7 * step + PAD * 2} className="block" role="img" aria-label="Heatmap">
           {DOW.map((d, i) =>
             d ? (
-              <text key={i} x={0} y={i * step + size * 0.8} fontSize={size * 0.8} className="fill-muted/60">
+              <text key={i} x={0} y={PAD + i * step + size * 0.8} fontSize={size * 0.8} className="fill-muted/60">
                 {d}
               </text>
             ) : null,
           )}
           {cells.map((c, i) => {
-            const x = LEFT + col(c.date) * step;
-            const y = dayOfWeek(c.date) * step;
+            const x = LEFT + PAD + col(c.date) * step;
+            const y = PAD + dayOfWeek(c.date) * step;
             return (
               <g key={c.date} onPointerEnter={() => setActive(i)} onPointerDown={(e) => (e.stopPropagation(), setActive(i))}>
                 <rect x={x} y={y} width={size} height={size} rx={Math.max(2, size / 4)} style={{ fill: c.fill }} />
@@ -87,8 +89,8 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
         <div
           className="pointer-events-none absolute z-20 whitespace-nowrap rounded-md bg-fg px-2.5 py-1.5 text-xs text-bg shadow-lg"
           style={{
-            left: LEFT + col(activeCell.date) * step + size / 2,
-            top: dayOfWeek(activeCell.date) * step - 6,
+            left: LEFT + PAD + col(activeCell.date) * step + size / 2,
+            top: PAD + dayOfWeek(activeCell.date) * step - 6,
             transform: "translate(-50%, -100%)",
           }}
         >
