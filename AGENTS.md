@@ -27,11 +27,13 @@ bug). Install with `npx -y npm@11.19.1 install` instead.
   `Index` over a `Snapshot`; nothing derived is ever stored.
 - **Tailwind 4**, semantic tokens in `src/styles/global.css` `@theme`:
   `bg/surface/border/fg/muted/accent/good/warn/bad` plus `heat-0…4`. Light-only, by
-  decision (no dark mode). Theme is built around himetsai.com's coral `#ff7777` on the
-  homepage's warm off-white `#f4ece9` with the site's dark-brown text — but with a
-  modern structure: system font stack (no web fonts, no Montserrat/Atkinson), flat
-  bordered white cards, no gradients or blur, no site header. `good` (`#e05c5c`) is the
-  readable coral for small text; `accent` is for fills. Heatmap scale is coral tints.
+  decision (no dark mode). Mirrors himetsai.com/shitpost: coral `#ff7777` on warm
+  off-white `#f4ece9`, dark-brown text, Atkinson Hyperlegible body, MD UI Black
+  (`font-display` / `.display`) for headings and big numbers, monospace for dates and
+  meta, white `.card`s with a dark hairline border and the site's soft shadow, a coral
+  "himetsai" wordmark. Fonts are self-hosted in `public/fonts/` so the PWA has them
+  offline. `good` (`#e05c5c`) is the readable coral for small text; `accent` is for
+  fills. Heatmap scale is the shitpost grid's coral alphas.
   No confetti — milestones are a toast plus a haptic.
 - **Data**: Drizzle + `@libsql/client`. Local dev `DATABASE_URL=file:local.db`;
   production Turso (`himetsai-routine`, `aws-us-west-2`). Vercel region `sfo1`.

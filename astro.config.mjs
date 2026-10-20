@@ -29,7 +29,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,webmanifest}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,woff2,webmanifest}"],
         navigateFallbackDenylist: [/^\/api\//, /^\/_actions\//, /^\/export\./],
       },
     }),

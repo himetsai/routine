@@ -280,7 +280,7 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
               </p>
             ) : null}
             {pauseOpen && !activePause ? (
-              <div className="space-y-2 rounded-lg border border-border p-3">
+              <div className="space-y-2 rounded-md border border-border p-3">
                 <div className="flex gap-2">
                   <label className="min-w-0 flex-1 text-xs">
                     <span className="label">from</span>
@@ -326,7 +326,7 @@ export function RoutineSheet({ idx, today, routine, open, onClose }: Props) {
 
 function Segmented<T extends string | number>({ options, value, onChange }: { options: { value: T; label: string }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div className="mt-1 inline-flex h-10 rounded-lg bg-fg/5 p-1">
+    <div className="mt-1 inline-flex h-10 rounded-md bg-fg/5 p-1">
       {options.map((o) => (
         <button
           key={String(o.value)}

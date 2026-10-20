@@ -15,7 +15,7 @@ export function RoutineRow({ routine, status, week, owner, onToggle, onOpen }: P
   const done = status === "done";
   const muted = done || status === "skipped" || status === "paused";
   return (
-    <li className="-mx-2 flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/[0.03]">
+    <li className="-mx-2 flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-fg/[0.03]">
       <CheckButton
         checked={done}
         disabled={!owner || status === "paused"}
@@ -33,7 +33,7 @@ export function RoutineRow({ routine, status, week, owner, onToggle, onOpen }: P
             aria-label={`Open ${routine.name}`}
           >
             <span className="text-base leading-none">{routine.emoji}</span>
-            <span className={`truncate font-medium transition-colors duration-200 ${muted ? "text-muted/70 line-through decoration-muted/50" : "text-fg"}`}>
+            <span className={`display truncate text-[17px] transition-colors duration-200 ${muted ? "text-muted/70 line-through decoration-muted/50" : "text-fg"}`}>
               {routine.name}
             </span>
           </button>

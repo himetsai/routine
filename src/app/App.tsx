@@ -88,6 +88,9 @@ function Dashboard() {
   return (
     <div className="space-y-3">
       <div className="flex h-7 items-center gap-4 px-1 text-sm">
+        <a href="https://himetsai.com" className="font-display text-xl font-bold text-accent transition-colors hover:text-accent/80">
+          himetsai
+        </a>
         {!online ? (
           <span className="rounded-md bg-fg/5 px-1.5 py-0.5 text-xs font-medium text-muted">offline{pending.length ? ` · ${pending.length} to sync` : ""}</span>
         ) : pending.length ? (
@@ -126,7 +129,7 @@ function Dashboard() {
           <div className="h-6 w-20 animate-pulse rounded bg-fg/10" />
           <div className="mt-4 space-y-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-9 animate-pulse rounded-lg bg-fg/5" />
+              <div key={i} className="h-9 animate-pulse rounded-md bg-fg/5" />
             ))}
           </div>
         </section>

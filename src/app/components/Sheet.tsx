@@ -35,14 +35,14 @@ export function Sheet({ open, onClose, title, children }: Props) {
             role="dialog"
             aria-modal
             aria-label={title}
-            className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl border border-border bg-surface p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl sm:max-w-md sm:rounded-2xl sm:p-6"
+            className="max-h-[90dvh] w-full overflow-y-auto rounded-t-lg border border-fg bg-surface p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl sm:max-w-md sm:rounded-md sm:p-6"
             initial={{ y: 40, opacity: 0.6 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ type: "spring", stiffness: 420, damping: 36 }}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{title}</h2>
+              <h2 className="display text-xl">{title}</h2>
               <button type="button" onClick={onClose} aria-label="Close" className="link rounded-md px-2 py-1 hover:bg-fg/5">
                 ✕
               </button>

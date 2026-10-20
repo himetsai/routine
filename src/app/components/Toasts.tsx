@@ -13,7 +13,7 @@ export function Toasts() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className={`pointer-events-auto flex items-center gap-3 rounded-lg px-3.5 py-2 text-sm font-medium shadow-lg ${
+            className={`pointer-events-auto flex items-center gap-3 rounded-md px-3.5 py-2 text-sm font-medium shadow-lg ${
               t.tone === "error" ? "bg-bad text-white" : "bg-fg text-bg"
             }`}
           >

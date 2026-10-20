@@ -55,17 +55,17 @@ export function RoutineCard({ idx, routine, today, onOpen }: Props) {
     <section className="card p-4 sm:p-5">
       <header className="flex items-start justify-between gap-3">
         <button type="button" onClick={() => onOpen?.(routine)} className="min-w-0 text-left" disabled={!onOpen}>
-          <h3 className="flex items-center gap-2 font-semibold tracking-tight">
+          <h3 className="display flex items-center gap-2 text-lg">
             <span>{routine.emoji}</span>
             <span className="truncate">{routine.name}</span>
           </h3>
-          <p className="mt-0.5 text-xs text-muted">{cadenceLabel}</p>
+          <p className="mt-0.5 font-mono text-xs text-muted">{cadenceLabel}</p>
         </button>
         <div className="shrink-0 text-right">
-          <div className="text-2xl font-semibold tabular-nums tracking-tight" style={{ color: s.current > 0 ? routine.color : undefined }}>
-            {s.current} <span className="text-sm font-medium">{unit}</span>
+          <div className="display text-2xl tabular-nums" style={{ color: s.current > 0 ? routine.color : undefined }}>
+            {s.current} <span className="font-sans text-sm font-normal">{unit}</span>
           </div>
-          <div className="text-xs text-muted">
+          <div className="font-mono text-xs text-muted">
             best {s.best}
             {next ? ` · ${next - s.current} to ${next}` : ""}
           </div>

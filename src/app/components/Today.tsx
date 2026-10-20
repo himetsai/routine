@@ -44,11 +44,11 @@ export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
     <section className="card p-4 sm:p-5">
       <header className="flex items-baseline justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Today</h1>
-          <div className="text-sm text-muted">{formatDay(today)}</div>
+          <h1 className="display text-xl">Today</h1>
+          <div className="font-mono text-sm text-muted">{formatDay(today)}</div>
         </div>
         {report.due > 0 ? (
-          <div className={`text-sm font-medium tabular-nums ${report.perfect ? "text-good" : "text-muted"}`}>
+          <div className={`font-mono text-sm tabular-nums ${report.perfect ? "text-good" : "text-muted"}`}>
             {report.done}/{report.due}
             {report.perfect ? " · perfect day" : ""}
           </div>
@@ -87,7 +87,7 @@ export function Today({ idx, today, owner, onOpen, onCreate }: Props) {
         <button
           type="button"
           onClick={onCreate}
-          className="mt-3 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted transition-colors hover:bg-fg/[0.03] hover:text-fg"
+          className="mt-3 flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted transition-colors hover:bg-fg/[0.03] hover:text-fg"
         >
           <span className="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-border">
             <svg viewBox="0 0 12 12" className="h-3 w-3" aria-hidden>

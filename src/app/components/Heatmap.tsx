@@ -65,7 +65,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
         <svg width={LEFT + cols * step + PAD * 2} height={7 * step + PAD * 2} className="block" role="img" aria-label="Heatmap">
           {DOW.map((d, i) =>
             d ? (
-              <text key={i} x={0} y={PAD + i * step + size * 0.8} fontSize={size * 0.8} className="fill-muted/60">
+              <text key={i} x={0} y={PAD + i * step + size * 0.8} fontSize={size * 0.8} className="fill-muted/60 font-mono">
                 {d}
               </text>
             ) : null,
@@ -75,10 +75,10 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
             const y = PAD + dayOfWeek(c.date) * step;
             return (
               <g key={c.date} onPointerEnter={() => setActive(i)} onPointerDown={(e) => (e.stopPropagation(), setActive(i))}>
-                <rect x={x} y={y} width={size} height={size} rx={Math.max(2, size / 4)} style={{ fill: c.fill }} />
+                <rect x={x} y={y} width={size} height={size} rx={size * 0.27} style={{ fill: c.fill }} />
                 {c.star ? <circle cx={x + size / 2} cy={y + size / 2} r={size / 6} className="fill-bg" opacity={0.9} /> : null}
                 {active === i ? (
-                  <rect x={x - 1} y={y - 1} width={size + 2} height={size + 2} rx={size / 4 + 1} fill="none" className="stroke-fg" strokeWidth={1.5} />
+                  <rect x={x - 1} y={y - 1} width={size + 2} height={size + 2} rx={size * 0.27 + 1} fill="none" className="stroke-fg" strokeWidth={1.5} />
                 ) : null}
               </g>
             );
@@ -95,7 +95,7 @@ export function Heatmap({ cells: allCells, size = 11 }: Props) {
           }}
         >
           {activeCell.label.split("\n").map((line, i) => (
-            <div key={i} className={i === 0 ? "font-semibold" : "text-bg/80"}>
+            <div key={i} className={i === 0 ? "font-mono" : "text-bg/80"}>
               {line}
             </div>
           ))}

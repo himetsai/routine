@@ -43,7 +43,7 @@ export function Overview({ idx, today }: Props) {
                 <span className="mr-1.5">{g.routine.emoji}</span>
                 {g.routine.name}
               </span>
-              <span className="shrink-0 tabular-nums text-muted">
+              <span className="shrink-0 font-mono tabular-nums text-muted">
                 {g.kind === "weekly" ? `${g.eval.done}/${g.eval.target}` : `${g.eval.done}/${g.eval.due}`}
                 {g.ratio !== null ? <span className="ml-2 inline-block w-12 text-right font-medium text-fg">{Math.round(g.ratio * 100)}%</span> : null}
               </span>
@@ -54,8 +54,8 @@ export function Overview({ idx, today }: Props) {
 
       <section className="card p-4 sm:p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="font-semibold tracking-tight">Last 52 weeks</h2>
-          <p className="text-xs tabular-nums text-muted">
+          <h2 className="display shrink-0 text-lg">Last 52 weeks</h2>
+          <p className="text-right font-mono text-xs tabular-nums text-muted">
             {heat.perfectDays} perfect {heat.perfectDays === 1 ? "day" : "days"} · {heat.perfectWeeks} perfect {heat.perfectWeeks === 1 ? "week" : "weeks"}
           </p>
         </div>
@@ -72,9 +72,9 @@ function WeekHeadline({ report }: { report: WeekReport }) {
     <div>
       <div className="label">{report.final ? "This week" : "This week so far"}</div>
       <div className="mt-1 flex items-baseline gap-3">
-        <span className="text-4xl font-semibold tabular-nums tracking-tight">{report.score !== null ? `${report.score}%` : "–"}</span>
-        {report.letter && report.final ? <span className="text-2xl font-semibold text-good">{report.letter}</span> : null}
-        {!report.final && report.score !== null ? <span className="text-xs text-muted">letter on Sunday night</span> : null}
+        <span className="display text-4xl tabular-nums">{report.score !== null ? `${report.score}%` : "–"}</span>
+        {report.letter && report.final ? <span className="display text-2xl text-good">{report.letter}</span> : null}
+        {!report.final && report.score !== null ? <span className="font-mono text-xs text-muted">letter on Sunday night</span> : null}
       </div>
     </div>
   );
@@ -84,9 +84,9 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
   return (
     <div>
       <dt className="label">{label}</dt>
-      <dd className="mt-1 text-2xl font-semibold tabular-nums tracking-tight">
+      <dd className="display mt-1 text-2xl tabular-nums">
         {value}
-        {sub ? <span className="ml-1 text-sm font-normal text-muted">{sub}</span> : null}
+        {sub ? <span className="ml-1 font-sans text-sm font-normal text-muted">{sub}</span> : null}
       </dd>
     </div>
   );

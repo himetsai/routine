@@ -41,7 +41,7 @@ export function DayStrip({ idx, routine, today }: Props) {
             disabled={dead}
             onClick={() => toggle(date)}
             title={`${date} · ${status}`}
-            className="flex flex-1 flex-col items-center gap-1 rounded-lg py-1.5 text-xs transition-colors hover:bg-fg/[0.03] disabled:opacity-30"
+            className="flex flex-1 flex-col items-center gap-1 rounded-md py-1.5 text-xs transition-colors hover:bg-fg/[0.03] disabled:opacity-30"
           >
             <span className="text-muted">{weekday}</span>
             <span
